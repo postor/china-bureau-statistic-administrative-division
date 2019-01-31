@@ -1,5 +1,5 @@
 const loadCity = require('./city')
-const retryPage = require('page')
+const retryPage = require('./page')
 
 module.exports = async (page, url) => {
   await page.goto(url)
