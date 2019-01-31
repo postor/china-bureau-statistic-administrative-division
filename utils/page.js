@@ -15,7 +15,7 @@ async function getPage() {
 
   const browser = await puppeteer.launch({
     args: [
-      `--proxy-server=${ip}:${port}`,
+      `--proxy-server=http://${ip}:${port}`,
       "--no-sandbox",
       "--disable-setuid-sandbox"
     ]
