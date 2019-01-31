@@ -1,4 +1,5 @@
 const loadCounty = require('./county')
+const retryPage = require('./page')
 
 module.exports = async (page, url) => {
   await page.goto(url)
@@ -25,8 +26,10 @@ module.exports = async (page, url) => {
     }
 
     rtn.push({
-      ...value,
-      children: await loadCounty(page, value.href)
+      ...value, 
+      children: await retryPage(async (page)=>{
+        return await loadCounty(page, value.href)
+      })
     })
   }
 

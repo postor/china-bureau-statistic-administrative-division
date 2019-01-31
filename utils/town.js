@@ -1,5 +1,5 @@
 const loadVillage = require('./village')
-const retryPage = require('page')
+const retryPage = require('./page')
 
 module.exports = async (page, url) => {
   await page.goto(url)
