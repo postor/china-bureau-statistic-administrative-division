@@ -1,6 +1,7 @@
 const loadVillage = require('./village')
 
 module.exports = async (page, url) => {
+  console.log(url)
   await page.goto(url)
   await page.waitForSelector('.villagetr')
 
