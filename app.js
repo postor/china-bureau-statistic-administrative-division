@@ -1,17 +1,17 @@
-const puppeteer = require('puppeteer')
+const fs = require('fs-extra')
 const argv = require('yargs').argv
 const getProvinces = require('./utils/province')
+const pageRetry = require('./utils/page')
 
-const { url = 'http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/index.html' } = argv;
+
+const {
+  url = 'http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/index.html',
+  output = 'china.json',
+} = argv;
 
 (async () => {
-  const browser = await puppeteer.launch({
-    devtools: true
+  await pageRetry(async (page) => {
+    const provinces = await getProvinces(page, url)
+    await fs.writeJSON(output, provinces)
   })
-
-  const page = await browser.newPage()
-  const provinces = await getProvinces(page, url)
-  console.log(provinces)
-  await page.close()
-  await browser.close()
 })()

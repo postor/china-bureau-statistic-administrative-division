@@ -1,4 +1,5 @@
 const loadVillage = require('./village')
+const retryPage = require('page')
 
 module.exports = async (page, url) => {
   await page.goto(url)
@@ -26,7 +27,9 @@ module.exports = async (page, url) => {
 
     rtn.push({
       ...value,
-      children: await loadVillage(page, value.href)
+      children: await retryPage(async (page)=>{
+        return await loadVillage(page, value.href)
+      })
     })
   }
 
