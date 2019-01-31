@@ -18,5 +18,6 @@ module.exports = async (page, url) => {
     })
   })
 
+  console.log(villages)
   return villages
 }

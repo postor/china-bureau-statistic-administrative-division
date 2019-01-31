@@ -2,6 +2,7 @@ const loadCity = require('./city')
 const retryPage = require('./page')
 
 module.exports = async (page, url) => {
+  console.log(url)
   await page.goto(url)
   await page.waitForSelector('.provincetr')
 

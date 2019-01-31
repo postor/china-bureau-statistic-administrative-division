@@ -2,6 +2,7 @@ const loadCounty = require('./county')
 const retryPage = require('./page')
 
 module.exports = async (page, url) => {
+  console.log(url)
   await page.goto(url)
   await page.waitForSelector('.citytr')
 
@@ -25,6 +26,7 @@ module.exports = async (page, url) => {
       break
     }
 
+    console.log(value)
     rtn.push({
       ...value, 
       children: await retryPage(async (page)=>{
