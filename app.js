@@ -13,5 +13,6 @@ const {
   await pageRetry(async (page) => {
     const provinces = await getProvinces(page, url)
     await fs.writeJSON(output, provinces)
+    console.log(`result file: ${output}`)
   })
 })()
