@@ -9,7 +9,7 @@ module.exports = async (page, url) => {
   await page.waitForSelector('.citytr', { timeout: 5000 })
   console.log('.citytr found')
 
-  const citys = await page.$$eval('.citytr', $arr => {
+  const citys = await cachedFn(url, async () => await page.$$eval('.citytr', $arr => {
     return $arr.map($tr => {
       $aNo = $tr.children[0].children[0]
       $aName = $tr.children[1].children[0]
@@ -19,7 +19,7 @@ module.exports = async (page, url) => {
         text: $aName.innerText.trim()
       }
     })
-  })
+  }))
 
   var eArr = citys[Symbol.iterator]()
   const rtn = []
@@ -32,9 +32,9 @@ module.exports = async (page, url) => {
     console.log(value)
     rtn.push({
       ...value,
-      children: await cachedFn(url, async () => await retryPage(async (page) => {
+      children: await retryPage(async (page) => {
         return await loadCounty(page, value.href)
-      }))
+      })
     })
   }
 

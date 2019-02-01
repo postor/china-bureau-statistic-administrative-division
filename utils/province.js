@@ -9,14 +9,14 @@ module.exports = async (page, url) => {
   await page.waitForSelector('.provincetr', { timeout: 5000 })
   console.log('.provincetr found')
 
-  const provinces = await page.$$eval('.provincetr a', $arr => {
+  const provinces = await cachedFn(url, async () => await page.$$eval('.provincetr a', $arr => {
     return $arr.map(a => {
       return {
         href: a.href,
         text: a.innerText.trim()
       }
     })
-  })
+  }))
 
   var eArr = provinces[Symbol.iterator]()
   const rtn = []
@@ -28,9 +28,9 @@ module.exports = async (page, url) => {
     console.log(value)
     rtn.push({
       ...value,
-      children: await cachedFn(url, async () => await retryPage(async (page) => {
+      children: await retryPage(async (page) => {
         return await loadCity(page, value.href)
-      }))
+      })
     })
   }
 
