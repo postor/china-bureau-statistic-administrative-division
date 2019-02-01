@@ -3,7 +3,7 @@ const loadVillage = require('./village')
 module.exports = async (page, url) => {
   console.log(url)
   await page.goto(url)
-  await page.waitForSelector('.villagetr')
+  await page.waitForSelector('.villagetr', { timeout: 5000 })
 
   const villages = await page.$$eval('.villagetr', $arr => {
     return $arr.map($tr => {

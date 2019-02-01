@@ -4,7 +4,7 @@ const retryPage = require('./page')
 module.exports = async (page, url) => {
   console.log(url)
   await page.goto(url)
-  await page.waitForSelector('.countytr')
+  await page.waitForSelector('.countytr', { timeout: 5000 })
 
   const counties = await page.$$eval('.countytr', $arr => {
     return $arr.map($tr => {
@@ -29,7 +29,7 @@ module.exports = async (page, url) => {
     console.log(value)
     rtn.push({
       ...value,
-      children: await retryPage(async (page)=>{
+      children: await retryPage(async (page) => {
         return await loadTown(page, value.href)
       })
     })
