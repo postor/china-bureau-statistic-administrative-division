@@ -2,6 +2,7 @@ const fs = require('fs-extra')
 const argv = require('yargs').argv
 const getProvinces = require('./utils/province')
 const pageRetry = require('./utils/page')
+const { cachedFn } = require('./utils/db')
 
 
 const {
@@ -11,7 +12,7 @@ const {
 
 (async () => {
   await pageRetry(async (page) => {
-    const provinces = await getProvinces(page, url)
+    const provinces = await cachedFn(url, async () => await getProvinces(page, url))
     await fs.writeJSON(output, provinces)
     console.log(`result file: ${output}`)
   })

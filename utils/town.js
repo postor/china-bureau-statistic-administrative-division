@@ -1,5 +1,6 @@
 const loadVillage = require('./village')
 const retryPage = require('./page')
+const { cachedFn } = require('./utils/db')
 
 module.exports = async (page, url) => {
   console.log(url)
@@ -31,9 +32,9 @@ module.exports = async (page, url) => {
     console.log(value)
     rtn.push({
       ...value,
-      children: await retryPage(async (page) => {
+      children: await cachedFn(url, async () => await retryPage(async (page) => {
         return await loadVillage(page, value.href)
-      })
+      }))
     })
   }
 
