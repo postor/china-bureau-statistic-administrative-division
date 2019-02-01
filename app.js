@@ -2,7 +2,7 @@ const fs = require('fs-extra')
 const argv = require('yargs').argv
 const getProvinces = require('./utils/province')
 const pageRetry = require('./utils/page')
-const { cachedFn } = require('./utils/db')
+const { init, cachedFn } = require('./utils/db')
 
 process.on('uncaughtException', function (err) {
   console.log('Caught exception: ', err);
@@ -14,6 +14,7 @@ const {
 } = argv;
 
 (async () => {
+  await init()
   await pageRetry(async (page) => {
     const provinces = await cachedFn(url, async () => await getProvinces(page, url))
     await fs.writeJSON(output, provinces)
