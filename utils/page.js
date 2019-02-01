@@ -44,6 +44,7 @@ module.exports = async (fn) => {
       const rtn = await fn(page)
       return rtn
     } catch (e) {
+      console.log(await page.evaluate(() => document.body.innerHTML))
       console.log(e)
       await t.getProxy(true)
       await close()
