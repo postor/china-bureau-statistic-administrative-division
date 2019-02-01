@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer')
 const P = require('free-http-proxy')
 
 const t = new P()
-let  proxy, browser
+let proxy, browser
 
 async function getPage() {
 
@@ -22,6 +22,9 @@ async function getPage() {
   }
   const page = await browser.newPage()
   await page.setDefaultNavigationTimeout(5000);
+  await page.setExtraHTTPHeaders({
+    'referer': 'http://www.stats.gov.cn'
+  })
 
   return {
     page,
@@ -49,4 +52,4 @@ module.exports = async (fn) => {
   }
 }
 
-module.exports.init = async ()=>await t.loadPage()
+module.exports.init = async () => await t.loadPage()
