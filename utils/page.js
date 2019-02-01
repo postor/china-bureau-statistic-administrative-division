@@ -2,10 +2,9 @@ const puppeteer = require('puppeteer')
 const P = require('free-http-proxy')
 
 const t = new P()
-let proxy, browser
+let proxy, browser, page
 
 async function getPage() {
-
   proxy = await t.getProxy()
   const { ip, port } = proxy
 
@@ -20,17 +19,23 @@ async function getPage() {
       ]
     })
   }
-  const page = await browser.newPage()
+  if (!page) {
+    console.log(`new page: ${proxyString}`)
+    page = await browser.newPage()
+  }
   await page.setDefaultNavigationTimeout(5000);
   await page.setExtraHTTPHeaders({
     'referer': 'http://www.stats.gov.cn'
   })
 
+  console.log(`new page ready:${proxyString}`)
   return {
     page,
     close: async () => {
+      console.log(`clean page and browser:${proxyString}`)
       await page.close()
       await browser.close()
+      page = undefined
       browser = undefined
     }
   }
