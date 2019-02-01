@@ -24,7 +24,7 @@ module.exports.cachedFn = async (_id, fn) => {
   if (cached) {
     console.log(`found cache for ${_id}`)
     console.log(cached)
-    return cached
+    return cached.data
   }
 
   const rtn = await fn()
@@ -34,13 +34,13 @@ module.exports.cachedFn = async (_id, fn) => {
   }
 
   const doc = {
-    ...rtn,
+    data: rtn,
     _id,
   }
 
   console.log(`setting cache for ${_id}`)
   await insert(doc)
-  return doc
+  return rtn
 }
 
 function insert(doc) {
