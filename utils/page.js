@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer')
 const P = require('free-http-proxy')
 
 const t = new P()
-let loaded = false, proxy
+let loaded = false, proxy, browser
 
 async function getPage() {
   if (!loaded) {
@@ -10,16 +10,20 @@ async function getPage() {
     loaded = true
   }
 
-  proxy = await t.getProxy(!!proxy)
+  proxy = await t.getProxy()
   const { ip, port } = proxy
 
-  const browser = await puppeteer.launch({
-    args: [
-      `--proxy-server=http://${ip}:${port}`,
-      "--no-sandbox",
-      "--disable-setuid-sandbox"
-    ]
-  })
+  if (!browser) {
+    const proxyString = `http://${ip}:${port}`
+    console.log(`new browser with proxy: ${proxyString}`)
+    browser = await puppeteer.launch({
+      args: [
+        `--proxy-server=${proxyString}`,
+        "--no-sandbox",
+        "--disable-setuid-sandbox"
+      ]
+    })
+  }
   const page = await browser.newPage()
   await page.setDefaultNavigationTimeout(5000);
 
@@ -28,6 +32,7 @@ async function getPage() {
     close: async () => {
       await page.close()
       await browser.close()
+      browser = undefined
     }
   }
 }
@@ -40,7 +45,8 @@ module.exports = async (fn) => {
       return rtn
     } catch (e) {
       console.log(e)
-      close()
+      await t.getProxy(true)
+      await close()
       continue
     }
   }
