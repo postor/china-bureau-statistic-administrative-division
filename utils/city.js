@@ -4,6 +4,10 @@ const { cachedFn } = require('./db')
 
 module.exports = async (page, url) => {
   const citys = await cachedFn(url, async () => {
+    if(!url){
+      console.log('empty url!')
+      return []
+    }
     console.log(url)
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 5000 })
     console.log('domcontentloaded')
@@ -11,12 +15,19 @@ module.exports = async (page, url) => {
     console.log('.citytr found')
     return await page.$$eval('.citytr', $arr => {
       return $arr.map($tr => {
-        $aNo = $tr.children[0].children[0]
-        $aName = $tr.children[1].children[0]
+        if ($tr.children[0].children.length) {
+          $aNo = $tr.children[0].children[0]
+          $aName = $tr.children[1].children[0]
+          return {
+            no: $aNo.innerText.trim(),
+            href: $aNo.href,
+            text: $aName.innerText.trim()
+          }
+        }
         return {
-          no: $aNo.innerText.trim(),
-          href: $aNo.href,
-          text: $aName.innerText.trim()
+          no: $tr.children[0].innerText.trim(),
+          href: '',
+          text: $tr.children[1].innerText.trim()
         }
       })
     })

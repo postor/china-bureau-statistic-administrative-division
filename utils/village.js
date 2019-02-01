@@ -3,6 +3,10 @@ const { cachedFn } = require('./db')
 module.exports = async (page, url) => {
 
   const villages = await cachedFn(url, async () => {
+    if(!url){
+      console.log('empty url!')
+      return []
+    }
     console.log(url)
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 5000 })
     console.log('domcontentloaded')
