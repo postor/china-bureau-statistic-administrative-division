@@ -2,13 +2,9 @@ const puppeteer = require('puppeteer')
 const P = require('free-http-proxy')
 
 const t = new P()
-let loaded = false, proxy, browser
+let  proxy, browser
 
 async function getPage() {
-  if (!loaded) {
-    await t.loadPage()
-    loaded = true
-  }
 
   proxy = await t.getProxy()
   const { ip, port } = proxy
@@ -52,3 +48,5 @@ module.exports = async (fn) => {
     }
   }
 }
+
+module.exports.init = async ()=>await t.loadPage()

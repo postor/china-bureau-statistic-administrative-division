@@ -15,6 +15,7 @@ const {
 
 (async () => {
   await init()
+  await pageRetry.init()
   await pageRetry(async (page) => {
     const provinces = await cachedFn(url, async () => await getProvinces(page, url))
     await fs.writeJSON(output, provinces)
