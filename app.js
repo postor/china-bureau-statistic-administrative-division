@@ -17,9 +17,16 @@ const {
 (async () => {
   await init()
   await pageRetry.init()
-  await pageRetry(async (page) => {
-    const provinces = await cachedFn(url, async () => await getProvinces(page, url))
-    await fs.writeJSON(output, provinces)
-    console.log(`result file: ${output}`)
-  })
+  while(true){
+    try {
+      await pageRetry(async (page) => {
+        const provinces = await cachedFn(url, async () => await getProvinces(page, url))
+        await fs.writeJSON(output, provinces)
+        console.log(`result file: ${output}`)
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  
 })()

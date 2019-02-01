@@ -28,10 +28,17 @@ module.exports.cachedFn = async (_id, fn) => {
   }
 
   const rtn = await fn()
+  if (!rtn) {
+    console.log(`fn failed in cachedFn`)
+    return rtn
+  }
+
   const doc = {
     ...rtn,
     _id,
   }
+
+  console.log(`setting cache for ${_id}`)
   await insert(doc)
   return doc
 }
