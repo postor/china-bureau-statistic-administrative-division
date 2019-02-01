@@ -8,8 +8,8 @@ async function getPage() {
   proxy = await t.getProxy()
   const { ip, port } = proxy
 
+  const proxyString = `http://${ip}:${port}`
   if (!browser) {
-    const proxyString = `http://${ip}:${port}`
     console.log(`new browser with proxy: ${proxyString}`)
     browser = await puppeteer.launch({
       args: [
