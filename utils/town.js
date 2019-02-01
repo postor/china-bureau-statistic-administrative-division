@@ -1,6 +1,6 @@
 const loadVillage = require('./village')
 const retryPage = require('./page')
-const { cachedFn } = require('./utils/db')
+const { cachedFn } = require('./db')
 
 module.exports = async (page, url) => {
   console.log(url)

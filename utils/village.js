@@ -1,6 +1,3 @@
-const loadVillage = require('./village')
-const { cachedFn } = require('./utils/db')
-
 module.exports = async (page, url) => {
   console.log(url)
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 5000 })
