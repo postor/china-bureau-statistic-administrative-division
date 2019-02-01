@@ -4,6 +4,9 @@ const getProvinces = require('./utils/province')
 const pageRetry = require('./utils/page')
 const { cachedFn } = require('./utils/db')
 
+process.on('uncaughtException', function (err) {
+  console.log('Caught exception: ', err);
+})
 
 const {
   url = 'http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/index.html',
