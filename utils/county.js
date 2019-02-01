@@ -3,7 +3,7 @@ const retryPage = require('./page')
 
 module.exports = async (page, url) => {
   console.log(url)
-  await page.goto(url)
+  await page.goto(url, { waitUntil: 'domcontentloaded' })
   await page.waitForSelector('.countytr', { timeout: 5000 })
 
   const counties = await page.$$eval('.countytr', $arr => {
