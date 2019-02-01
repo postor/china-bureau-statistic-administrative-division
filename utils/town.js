@@ -4,7 +4,9 @@ const retryPage = require('./page')
 module.exports = async (page, url) => {
   console.log(url)
   await page.goto(url, { waitUntil: 'domcontentloaded' })
+  console.log('domcontentloaded')
   await page.waitForSelector('.towntr', { timeout: 5000 })
+  console.log('.towntr found')
 
   const towns = await page.$$eval('.towntr', $arr => {
     return $arr.map($tr => {
