@@ -15,6 +15,7 @@ module.exports = async (page, url) => {
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 5000 })
     console.log('domcontentloaded')
     try {
+      console.log('trying .countytr ...')
       await page.waitForSelector('.countytr', { timeout: 5000 })
       console.log('.countytr found')
       return {
@@ -22,6 +23,8 @@ module.exports = async (page, url) => {
         children: await eval(page, '.countytr')
       }
     } catch (e) {
+      console.log(e)
+      console.log('trying .towntr ...')
       await page.waitForSelector('.towntr', { timeout: 5000 })
       console.log('.townytr found')
       return {
