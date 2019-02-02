@@ -42,7 +42,7 @@ module.exports = async (page, url) => {
     return await loadFn(arr.children,loadTown)
   } 
   
-  if (counties.type == 'town') {
+  if (arr.type == 'town') {
     return await loadFn(arr.children,loadVillage)
   } 
   
