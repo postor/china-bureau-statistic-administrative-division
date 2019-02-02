@@ -1,56 +1,67 @@
 const loadTown = require('./town')
+const loadVillage = require('./village')
 const retryPage = require('./page')
 const { cachedFn } = require('./db')
+const eval = require('./eval-county-or-town')
 
 module.exports = async (page, url) => {
 
-  const counties = await cachedFn(url, async () => {
-    if(!url){
+  const arr = await cachedFn(url, async () => {
+    if (!url) {
       console.log('empty url!')
       return []
     }
     console.log(url)
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 5000 })
     console.log('domcontentloaded')
-    await page.waitForSelector('.countytr', { timeout: 5000 })
-    console.log('.countytr found')
-    return await page.$$eval('.countytr', $arr => {
-      return $arr.map($tr => {
-        if ($tr.children[0].children.length) {
-          $aNo = $tr.children[0].children[0]
-          $aName = $tr.children[1].children[0]
-          return {
-            no: $aNo.innerText.trim(),
-            href: $aNo.href,
-            text: $aName.innerText.trim()
-          }
-        }
-        return {
-          no: $tr.children[0].innerText.trim(),
-          href: '',
-          text: $tr.children[1].innerText.trim()
-        }
-      })
-    })
+    try {
+      await page.waitForSelector('.countytr', { timeout: 5000 })
+      console.log('.countytr found')
+      return {
+        type: 'county',
+        children: await eval(page, '.countytr')
+      }
+    } catch (e) {
+      await page.waitForSelector('.towntr', { timeout: 5000 })
+      console.log('.townytr found')
+      return {
+        type: 'town',
+        children: await eval(page, '.towntr')
+      }
+    }
   })
 
-  var eArr = counties[Symbol.iterator]()
-  const rtn = []
-  while (true) {
-    const { done, value } = eArr.next()
-    if (done) {
-      break
-    }
+  if (arr.length) {
+    return await loadFn(arr,loadTown)
+  } 
+  
+  if (arr.type == 'county') {
+    return await loadFn(arr.children,loadTown)
+  } 
+  
+  if (counties.type == 'town') {
+    return await loadFn(arr.children,loadVillage)
+  } 
+  
+  throw 'this path should not go!'
 
-    console.log(value)
-    rtn.push({
-      ...value,
-      children: await retryPage(async (page) => {
-        return await loadTown(page, value.href)
+  async function loadFn(arr, fn) {
+    var eArr = arr[Symbol.iterator]()
+    const rtn = []
+    while (true) {
+      const { done, value } = eArr.next()
+      if (done) {
+        break
+      }
+
+      console.log(value)
+      rtn.push({
+        ...value,
+        children: await retryPage(async (page) => {
+          return await fn(page, value.href)
+        })
       })
-    })
+    }
+    return rtn
   }
-
-
-  return rtn
 }
